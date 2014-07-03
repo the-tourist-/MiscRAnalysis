@@ -1,0 +1,17 @@
+{
+    "contents" : "require(RODBC)\n\n#Price.Jumps <- read.csv(\"~/GitHub/MiscRAnalysis/Price Jumps.csv\", stringsAsFactors=FALSE)\n#Price.Jumps$LogChange1 = as.numeric(Price.Jumps$LogChange1)\n#Price.Jumps$LogChange2 = as.numeric(Price.Jumps$LogChange2)\n#Price.Jumps$Close1 = as.numeric(Price.Jumps$Close1)\n#Price.Jumps$Close2 = as.numeric(Price.Jumps$Close2)\n#Price.Jumps$SplitFactor1 = as.numeric(Price.Jumps$SplitFactor1)\n#Price.Jumps$SplitFactor2 = as.numeric(Price.Jumps$SplitFactor2)\n#Price.Jumps$VolumeSpike = as.numeric(Price.Jumps$VolumeSpike)\n#Price.Jumps$Multiplier = as.numeric(Price.Jumps$Multiplier)\n#Price.Jumps$Date1 = as.Date(Price.Jumps$Date1, \"%m/%d/%Y\")\n#Price.Jumps$Date2 = as.Date(Price.Jumps$Date2, \"%m/%d/%Y\")\n#Price.Jumps$Recommendation <- rep(\" \", times=length(Price.Jumps$Symbol))\n\nif (!is.null(dev.list()))\n  dev.off(dev.list())\n\nfor (i in 1:length(Price.Jumps$Symbol)) {\n  if(Price.Jumps$Recommendation[i] != \"F\" & nchar(Price.Jumps$Recommendation[i]) == 1)\n    next()\n  if (Price.Jumps$SplitFactor1[i] != Price.Jumps$SplitFactor2[i])\n    next()\n    \n  with (Price.Jumps, {\n    par(mfcol=c(3,1))\n    \n    SubTitle=sprintf(\"%s - Multiplier = %#.2f, VolumeSpike=%#.1f\", PriceSourceUser[i], Multiplier[i], VolumeSpike[i])\n    if (SplitFactor1[i] != SplitFactor2[i])\n      SubTitle <- paste(SubTitle, sprintf(\"SplitFactors of (%#.3f, %#.3f)\", SplitFactor1[i], SplitFactor2[i]))\n    \n    print(\"\")\n    print(sprintf(\"%i: %s - %s\",i, Price.Jumps$Symbol[i], Price.Jumps$Name[i]))\n    print(SubTitle)\n    \n    tryCatch({MIPlotReutersPITPrices(EntityId=EntityId[i], MarkDate=c(Date1[i], Date2[i]))}, error= function(err) { print(err)})\n    tryCatch({MIPlotPrices(EntityId=EntityId[i], MarkDate=c(Date1[i], Date2[i]), SubTitle=SubTitle)}, error= function(err) { print(err)})\n    tryCatch({MIPlotEODDataPrices(EntityId=EntityId[i], MarkDate=c(Date1[i], Date2[i]))}, error= function(err) { print(err)})\n  })\n  print (\"\")\n  \n  key <- toupper(scan(n=1, what=\"character\"))\n  if (length(key) == 1) {\n    if (key == \"Q\")\n      return(NULL)\n    else if (key == \"P\")\n      i <- i - 2\n    else\n      Price.Jumps$Recommendation[i] = key\n  }\n}",
+    "created" : 1403714180765.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "496883769",
+    "id" : "87E5453E",
+    "lastKnownWriteTime" : 1404314267,
+    "path" : "~/GitHub/MiscRAnalysis/temp.R",
+    "project_path" : "temp.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : true,
+    "type" : "r_source"
+}

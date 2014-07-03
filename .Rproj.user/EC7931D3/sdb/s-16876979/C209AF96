@@ -1,0 +1,17 @@
+{
+    "contents" : "require(RODBC)\n\nPrice.Jumps <- read.csv(\"~/GitHub/MiscRAnalysis/Price Jumps Around Splits.csv\", stringsAsFactors=FALSE)\nPrice.Jumps$LogChange = as.numeric(Price.Jumps$LogChange)\nPrice.Jumps$LogSplitRatio = as.numeric(Price.Jumps$LogSplit)\nPrice.Jumps$Close = as.numeric(Price.Jumps$Close)\nPrice.Jumps$AdjClose = as.numeric(Price.Jumps$AdjClose)\nPrice.Jumps$PrevAdjClose = as.numeric(Price.Jumps$PrevAdjClose)\nPrice.Jumps$LogSplitRatio = as.numeric(Price.Jumps$LogSplitRatio)\nPrice.Jumps$VolumeSpike = as.numeric(Price.Jumps$VolumeSpike)\nPrice.Jumps$Date = as.Date(Price.Jumps$Date, \"%m/%d/%Y\")\nPrice.Jumps$PrevDate = as.Date(Price.Jumps$PrevDate, \"%m/%d/%Y\")\nPrice.Jumps$Recommendation <- rep(\" \", times=length(Price.Jumps$Symbol))\n\nif (!is.null(dev.list()))\n  dev.off(dev.list())\n\nfor (i in 1:length(Price.Jumps$Symbol)) {\n  if(Price.Jumps$Recommendation[i] != \" \" & nchar(Price.Jumps$Recommendation[i]) == 1)\n    next()\n  \n  with (Price.Jumps, {\n    par(mfcol=c(3,1))\n    \n    SubTitle=sprintf(\"%s - LogChange = %#.2f, LogSplitRatio=%#.1f\", PriceSourceUser[i], LogChange[i], LogSplitRatio[i])\n    \n    print(\"\")\n    print(sprintf(\"%i: %s - %s\",i, Price.Jumps$Symbol[i], Price.Jumps$Name[i]))\n    print(SubTitle)\n    \n    tryCatch({MIPlotReutersPITPrices(EntityId=EntityId[i], MarkDate=c(Date[i]))}, error= function(err) { print(err)})\n    tryCatch({MIPlotPrices(EntityId=EntityId[i], MarkDate=c(Date[i]), SubTitle=SubTitle)}, error= function(err) { print(err)})\n    tryCatch({MIPlotEODDataPrices(EntityId=EntityId[i], MarkDate=c(Date[i]))}, error= function(err) { print(err)})\n  })\n  print (\"\")\n  \n  key <- toupper(scan(n=1, what=\"character\"))\n  if (length(key) == 1) {\n    if (key == \"Q\")\n      return(NULL)\n    else if (key == \"P\")\n      i <- i - 2\n    else\n      Price.Jumps$Recommendation[i] = key\n  }\n}",
+    "created" : 1404316014408.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "176440550",
+    "id" : "C209AF96",
+    "lastKnownWriteTime" : 1404360140,
+    "path" : "~/GitHub/MiscRAnalysis/temp2.R",
+    "project_path" : "temp2.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : true,
+    "type" : "r_source"
+}
